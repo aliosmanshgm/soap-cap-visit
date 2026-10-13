@@ -1,0 +1,1 @@
+{"rules":{".read":false,".write":false,"users":{"$uid":{".read":"auth != null && auth.uid === $uid && auth.uid === 'RjJodHUONiVZsiIvlb3O0J3pl2g2'",".write":"auth != null && auth.uid === $uid && auth.uid === 'RjJodHUONiVZsiIvlb3O0J3pl2g2'"}}}}
