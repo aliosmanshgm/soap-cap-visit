@@ -1,12 +1,12 @@
 'use strict';
 const $=id=>document.getElementById(id),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const decisions=['Henüz değerlendirilmedi','Güncelleme gerekli','Güncelleme gerekli değil','Birim görüşü bekleniyor'],statuses=['İncelenmedi','İnceleniyor','İnceleme tamamlandı'],fields={action:'CAP faaliyet metni',office:'Sorumlu birim',evidence:'Kanıt referansı',estimated:'Est. Imp.',revised:'Rev. Imp.',completed:'Tamamlanma tarihi',progress:'İlerleme'};
-let state={schema:1,records:[],imports:[]},selected='',pending=null,uploadQueue=[],uploadTotal=0,saveQueue=Promise.resolve(),dbOK=false;
+let state={schema:1,records:[],imports:[]},selected='',pending=null,uploadQueue=[],uploadTotal=0,saveQueue=Promise.resolve(),dbOK=false,cloudUnsaved=false,saveCount=0;
 const uid=()=>crypto.randomUUID(),key=p=>[p.area,p.version,p.no].join('|'),review=()=>({decision:decisions[0],status:statuses[0],note:'',reason:'',followup:'',coverage:'Değerlendirilmedi',proposed:{}}),rev=o=>o.review||review();
 function filenameDate(name){const m=String(name).match(/CAP(\d{4})(\d{2})(\d{2})\d*(?:\s*\(\d+\))?\.docx$/i);if(!m)return '';const y=+m[1],mo=+m[2],d=+m[3],dt=new Date(Date.UTC(y,mo-1,d));return dt.getUTCFullYear()===y&&dt.getUTCMonth()===mo-1&&dt.getUTCDate()===d?`${m[1]}-${m[2]}-${m[3]}`:''}
 function sourceDate(p){return p.documentDate||filenameDate(p.source)}
 function displayDate(value){return value?value.split('-').reverse().join('.'):'Belirlenemedi'}
-function persist(){const snapshot=structuredClone(state);$('save').textContent='Kaydediliyor…';saveQueue=saveQueue.catch(()=>{}).then(()=>{if(!dbOK)throw Error('Veritabanı açılamadı');if(Cloud.active)return Repository.saveKey('cloud-recovery',snapshot).then(()=>Cloud.write(snapshot));return Repository.save(snapshot)}).then(()=>{$('save').textContent=(Cloud.active?'Firebase kaydedildi · ':'Yerel kaydedildi · ')+new Date().toLocaleTimeString('tr-TR')}).catch(e=>{$('save').textContent='Kayıt başarısız! Yedek alınız. '+e.message;console.error(e)});return saveQueue}
+function persist(){const snapshot=structuredClone(state),cloudMode=Cloud.active;saveCount++;if(cloudMode)cloudUnsaved=true;$('save').textContent='Kaydediliyor…';saveQueue=saveQueue.catch(()=>{}).then(()=>{if(!dbOK)throw Error('Veritabanı açılamadı');if(cloudMode)return Repository.saveKey('cloud-recovery',snapshot).then(()=>Cloud.write(snapshot));return Repository.save(snapshot)}).then(()=>{if(cloudMode&&saveCount===1)cloudUnsaved=false;$('save').textContent=(Cloud.active?'Firebase kaydedildi · ':'Yerel kaydedildi · ')+new Date().toLocaleTimeString('tr-TR')}).catch(e=>{$('save').textContent='Kayıt başarısız! Yedek alınız. '+e.message;console.error(e)}).finally(()=>{saveCount--});return saveQueue}
 function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
 const stamp=()=>new Date().toISOString().slice(0,10);
 const AREA_ORDER=['LEG','ORG','PEL','OPS','AIR','AIG','ANS','AGA'];
@@ -40,9 +40,39 @@ $('excel').onclick=()=>{const ps=exportRecords();if(!ps.length)return alert('Ç�
 $('pdf').onclick=()=>{const ps=exportRecords();if(!ps.length)return alert('Çıktı için PQ seçin.');const w=window.open('','_blank');if(!w)return alert('Rapor penceresi engellendi. Bu uygulama için açılır pencerelere izin verin.');w.document.write(`<!doctype html><html lang="tr"><meta charset="utf-8"><title>PQ CAP Değerlendirme</title><style>body{font:12px Arial;color:#203044;margin:30px}h1{font-size:24px}p{white-space:pre-wrap;line-height:1.6}section{break-before:page}section:first-of-type{break-before:auto}article{border-top:1px solid #bbb;margin-top:20px}table{border-collapse:collapse;width:100%;table-layout:fixed}td,th{border:1px solid #ccc;padding:8px;white-space:pre-wrap;overflow-wrap:anywhere}th{text-align:left;background:#eee}button{padding:12px}@media print{button{display:none}@page{size:A4;margin:18mm}}</style><button onclick="window.print()">Yazdır / PDF olarak kaydet</button><h1>PQ · CAP Değerlendirme Raporu</h1><p>${new Date().toLocaleString('tr-TR')} · ${ps.length} PQ</p>${ps.map(p=>`<section><h2>${E(p.area)} / PQ ${E(p.no)} / ${E(p.ce)}</h2><p>Kaynak: ${E(p.source)} · Sürüm: ${E(p.version)} · Belge tarihi: ${E(displayDate(sourceDate(p)))}</p><h3>PQ Sorusu</h3><p>${E(p.question)}</p><h3>Description</h3><p>${E(p.description)}</p>${reportReview(p)}${p.steps.map(s=>`<article><h3>CAP Adım ${E(s.number)} ${s.draft?'(Yeni öneri)':''}</h3><table><tr><th>Alan</th><th>Kaynak değer</th><th>Önerilen değer</th></tr>${Object.entries(fields).map(([k,v])=>`<tr><td>${v}</td><td>${E(s[k])}</td><td>${Object.hasOwn(rev(s).proposed,k)?E(rev(s).proposed[k])||'(Temizlenecek)':'—'}</td></tr>`).join('')}</table>${reportReview(s)}</article>`).join('')}</section>`).join('')}</html>`);w.document.close()};
 function reportReview(o){const r=rev(o);return `<p><b>İnceleme:</b> ${E(r.status)} · <b>Karar:</b> ${E(r.decision)}\n<b>Not:</b> ${E(r.note)}\n<b>Gerekçe:</b> ${E(r.reason)}\n<b>Takip:</b> ${E(r.followup)}${o.no?'\n<b>Bulgu kapsamı:</b> '+E(r.coverage):''}</p>`}
 $('help').onclick=()=>modal('<h2>Kullanım</h2><ol><li>Word yükle ile bir veya birden fazla ICAO CAP .docx belgenizi seçin (Ctrl/Shift). Belgeler sırayla önizlenir.</li><li>Önizlemede PQ ve adımları kontrol edin; PQ sürümü 2024 olarak gelir. Belge tarihi dosya adından otomatik alınır; kontrol edin.</li><li>Aynı PQ yeniden yüklenirse eski ve yeni metinleri karşılaştırın; adım eşleştirmelerini kontrol edin.</li><li>Soldan PQ seçin. PQ genel değerlendirmesini ve her CAP adımının notlarını doldurun.</li><li>Güncelleme gerekli ise önerilecek alanları işaretleyip yeni değerleri yazın.</li><li>Excel/PDF öncesi çıktı kapsamını seçin. PDF, tarayıcının “PDF olarak kaydet” seçeneğiyle alınır.</li><li>Düzenli olarak JSON yedeği alın. Tarayıcı verilerinin temizlenmesi yerel kayıtları silebilir.</li></ol><p>Notlar otomatik kaydedilir. Kaynak veriler değiştirilmez. Yeni belge yüklemesi önceki kaynak ve notları geçmişte saklar. Eski .doc dosyaları desteklenmez; Word’den .docx olarak kaydedin.</p>',null);
-(async()=>{try{await Repository.init();dbOK=true;const saved=await Repository.load();if(saved)state=validateBackup(saved);$('save').textContent='Yerel kayıt hazır'}catch(e){$('save').textContent='Yerel kayıt açılamadı; yedek alarak çalışın.';alert('Yerel veritabanı açılamadı: '+e.message)}selected=state.records[0]?.id||'';fillFilters();render()})();
 
-$('cloud').onclick=()=>{modal(`<h2>Firebase çalışma alanı</h2><p>Proje: usoap-cap-visit</p><p class="notice">Yerel kayıtlar otomatik aktarılmaz. Giriş sonrası buluttaki veriler kontrol edilir.</p><label>E-posta<input id="loginEmail" type="email" autocomplete="username"></label><label>Şifre<input id="loginPassword" type="password" autocomplete="current-password"></label><p id="loginError" class="error"></p>`,async()=>{const button=$('confirm');button.disabled=true;try{await saveQueue;await Cloud.login($('loginEmail').value.trim(),$('loginPassword').value);$('loginPassword').value='';const remote=await Cloud.read();const local=structuredClone(state);if(remote){const loaded=validateBackup(JSON.parse(remote.payload));modal(`<h2>Bulut kaydı bulundu</h2><p>Bulutta ${loaded.records.length} PQ var. Açıldığında ekrandaki çalışma bulut kaydına geçer; yerel çalışma ayrı saklanır.</p><p>Mevcut çalışmanızın yedeği otomatik indirilir. Bekleyen değişiklik varsa bu yedeği saklayın.</p>`,async()=>{download(new Blob([JSON.stringify(local,null,2)],{type:'application/json'}),'PQ_CAP_Gecis_Yedegi_'+stamp()+'.json');Cloud.revision=remote.revision;Cloud.active=true;state=loaded;fillFilters();render();$('modal').close();$('save').textContent='Firebase çalışma alanı açıldı';$('cloud').textContent='Firebase bağlı';},'Bulut kaydını aç')}else{modal(`<h2>İlk bulut aktarımı</h2><p>Bulutta kayıt yok. Mevcut çalışma: ${local.records.length} PQ / ${local.records.reduce((n,p)=>n+p.steps.length,0)} CAP adımı.</p><p>Bu çalışma Firebase’e aktarılacak. Başka bilgisayarda çalışıyorsanız önce JSON yedeğinizi geri yükleyin.</p>`,async()=>{const b=$('confirm');b.disabled=true;try{Cloud.revision=null;await Cloud.write(local);Cloud.active=true;$('modal').close();$('save').textContent='Firebase aktarımı tamamlandı';$('cloud').textContent='Firebase bağlı'}catch(e){alert(e.message)}finally{b.disabled=false}},'Bu çalışmayı buluta aktar')}}catch(e){$('loginError').textContent=e.message}finally{button.disabled=false}},'Giriş yap ve kontrol et');};
-
-$('sync').onclick=async()=>{if(!Cloud.active)return alert('Önce Firebase çalışma alanını açın.');await persist()};
-$('logout').onclick=async()=>{if(!Cloud.active)return;await saveQueue;download(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),'PQ_CAP_Cikis_Yedegi_'+stamp()+'.json');await Cloud.logout();state=(await Repository.load())||{schema:1,records:[],imports:[]};fillFilters();render();$('cloud').textContent='Firebase / Giriş';$('save').textContent='Yerel çalışma alanı açıldı'};
+async function openCloud(){
+ const remote=await Cloud.read();
+ const loaded=remote?validateBackup(JSON.parse(remote.payload)):{schema:1,records:[],imports:[]};
+ Cloud.revision=remote?.revision??null;Cloud.active=true;cloudUnsaved=false;state=loaded;
+ for(const id of ['search','office','area','ce','decision'])$(id).value='';
+ selected='';fillFilters();render();$('cloud').textContent='Firebase bağlı';$('logout').hidden=false;
+ $('save').textContent=remote?'Firebase kayıtları yüklendi':'Firebase hazır · henüz kayıt yok';
+}
+$('cloud').onclick=()=>{
+ if(Cloud.active){alert('Firebase çalışma alanı açık. Değişiklikler otomatik kaydedilir.');return}
+ modal(`<h2>Giriş yap</h2><p>Giriş sonrası Firebase kayıtlarınız otomatik açılır.</p><label>E-posta<input id="loginEmail" type="email" autocomplete="username"></label><label>Şifre<input id="loginPassword" type="password" autocomplete="current-password"></label><p id="loginError" class="error"></p>`,async()=>{
+ const button=$('confirm');button.disabled=true;$('cancel').disabled=true;
+ try{await saveQueue;await Cloud.login($('loginEmail').value.trim(),$('loginPassword').value);$('loginPassword').value='';await openCloud();$('modal').close()}
+ catch(e){$('loginError').textContent=e.message}
+ finally{button.disabled=false;$('cancel').disabled=false}
+ },'Giriş yap');
+};
+$('sync').onclick=async()=>{if(!Cloud.active)return alert('Önce giriş yapın.');await persist()};
+$('logout').onclick=async()=>{
+ if(!Cloud.active)return;
+ document.body.inert=true;
+ try{await saveQueue;if(cloudUnsaved){alert('Kaydedilmemiş değişiklik var. Buluta tekrar kaydedin veya Yedek al ile koruyun. Çıkış yapılmadı.');return}
+ await Cloud.logout();state={schema:1,records:[],imports:[]};selected='';fillFilters();render();$('cloud').textContent='Firebase / Giriş';$('logout').hidden=true;$('save').textContent='Oturum kapatıldı';
+ }finally{document.body.inert=false}
+};
+window.addEventListener('beforeunload',e=>{if(saveCount||cloudUnsaved){e.preventDefault();e.returnValue=''}});
+(async()=>{
+ document.body.inert=true;
+ try{await Repository.init();dbOK=true;const saved=await Repository.load();if(saved)state=validateBackup(saved);fillFilters();render();$('save').textContent='Yerel çalışma · Firebase oturumu kontrol ediliyor';
+ await Cloud.init();await Cloud.auth.authStateReady();
+ if(Cloud.auth.currentUser?.uid===Cloud.uid)await openCloud();
+ else{$('save').textContent='Yerel çalışma · bulut kayıtları için giriş yapın';$('logout').hidden=true}
+ }catch(e){$('save').textContent='Firebase otomatik açılamadı · tekrar giriş yapın';console.error(e);fillFilters();render()}
+ finally{document.body.inert=false}
+})();

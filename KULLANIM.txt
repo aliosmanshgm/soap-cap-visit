@@ -1,60 +1,22 @@
-PQ CAP Çalışma Alanı — v1.3
+PQ CAP v1.6
 
-BAŞLANGIÇ
-1. ZIP dosyasını bir klasöre çıkartın.
-2. index.html dosyasını güncel Chrome veya Edge ile açın.
-3. Yerel kayıt tarayıcı tarafından engellenirse, Python 3 kurulu Windows bilgisayarda BASLAT.bat dosyasını çalıştırın. Her seferinde aynı http://localhost:8765 adresini kullanın.
-4. Word yükle: Bir veya birden fazla .docx dosyasını Ctrl/Shift ile seçin. Belgeler sırayla önizleme ve eşleştirme kontrolünden geçer. Aktarım onayından sonra sonraki belge açılır. Kapat/Esc kalan kuyruğu iptal eder.
-5. Önizlemede alanları kontrol edin. PQ sürümü varsayılan 2024 gelir. Belge tarihi CAP sonrasındaki YYYYMMDD tarihinden okunur: TurkiyeORGCAP20261013000000000.docx → 13.10.2026. Dönem girişi kaldırılmıştır. Tarih bulunamazsa boş kalır; önizlemede elle girilebilir. İçe aktarma zamanı ayrıdır.
-6. Karşılaştırma ekranını kontrol edip içe aktarın.
+GİRİŞ VE KAYIT
+Giriş yapınca Firebase kayıtları otomatik yüklenir; ikinci onay ve otomatik JSON indirme yoktur.
+Aynı sekmede sayfa yenilendiğinde açık oturum kontrol edilir, bulut kayıtları otomatik açılır.
+Oturum sona erdiyse tekrar e-posta/şifreyle giriş yapın.
+Değişiklikler otomatik kaydedilir. Altta Firebase kaydedildi mesajını kontrol edin.
+Bulut boşsa boş çalışma açılır; Word yükleyebilir veya Yedek yükle ile eski JSON verinizi aktarabilirsiniz.
+Yedek yükleme mevcut bulut çalışmasının yerine geçer ve önceden onay ister.
+Yedek al yalnızca sizin tıklamanızla JSON indirir. Giriş/çıkış dosya indirmez.
+Çıkış, ekrandaki bulut verilerini temizler. Kaydedilmemiş değişiklik varsa çıkış durdurulur.
+Bağlantı hatasında Buluta tekrar kaydet kullanın. Çakışma halinde JSON yedeği alın; sayfayı yenileyip kayıtları kontrol edin.
+Yerel kurtarma kopyası IndexedDB içinde kalır; otomatik olarak bulutun üzerine yüklenmez.
 
-DEĞERLENDİRME
-PQ genel değerlendirmesi ve her adım ayrı kaydedilir. Kaynak metin değişmez.
-Güncelleme gerekli seçeneğinde önerilecek alanları işaretleyin, yeni değerleri yazın.
-İşaretli boş öneri alanın temizlenmesi anlamına gelir.
-Yeni adım önerileri resmi kaynağa eklenmiş sayılmaz; taslak olarak saklanır.
+GÜNCELLEME
+Önce kaydın tamamlandığını kontrol edin, isteğe bağlı JSON yedeği alın.
+GitHub'da index.html ve app.js dosyalarını değiştirin. cloud.js v1.5 ile aynıdır.
+Yayın tamamlanınca Ctrl+F5 ile yenileyin. Firebase kuralları değişmez.
 
-YENİ BELGE
-Alan + PQ sürümü + PQ numarası ile eşleştirilir. Değişen adımlar için eski değerlendirme eşleştirmesini kontrol edin. Eşleştirilmeyen eski adımlar geçmişte kalır. Yeni belgede yer almayan PQ'lar silinmez. Bir kaydın belgede bulunmaması kapandığını göstermez.
-
-ÇIKTI
-Kapsamı seçin: tüm PQ'lar / filtrelenen PQ'lar / seçili PQ.
-Excel: üç sayfalı gerçek XLSX dosyası. Metinler kaynak diliyle korunur.
-PDF: rapor penceresindeki Yazdır düğmesine basın, PDF olarak kaydet seçin. Tarayıcınız açılır pencereyi engellerse izin verin.
-
-KAYIT VE YEDEK
-Notlar IndexedDB'ye otomatik kaydedilir. Alttaki kayıt göstergesini kontrol edin.
-Düzenli JSON yedeği alın. Tarayıcı verilerinin temizlenmesi kayıtları silebilir.
-Farklı tarayıcı, bilgisayar veya adrese geçmeden önce yedek alın ve yeni yerde geri yükleyin.
-Yedek geri yükleme mevcut çalışmanın yerine geçer.
-
-TEKNİK
-Yerel özellikler internetsiz çalışır. Firebase modu SDK indirmek ve buluta erişmek için internet gerektirir. Eski .doc desteklenmez.
-Dosyalar: index.html, app.css, app.js, formats.js, storage.js.
-Firebase bağlantı kodu v1.4 ile eklenmiştir; canlı test beklenmektedir.
-GitHub Pages'e uygulama dosyaları taşınabilir. Kişisel yedekleri ve CAP belgelerini herkese açık depoya yüklemeyin.
-
-DOĞRULAMA SINIRI
-Sağlanan PEL belgesinde 24 PQ / 89 dolu CAP adımı, alan aktarımı ve XLSX açılabilirliği programatik olarak kontrol edilmiştir. Bu ortamda etkileşimli tarayıcı testi yapılamamıştır. Farklı Word şablonlarında içe aktarma önizlemesini mutlaka kontrol edin.
-
-GÜNCELLEME: Önce eski sürümden JSON yedeği alın. Dosyaları aynı uygulama klasöründe değiştirin, aynı tarayıcı ve adresi kullanın. IndexedDB adı değişmemiştir. Eski kaynak dosya adlarından belge tarihi gösterilir; mevcut notlar korunur. Eski boş PQ sürümleri otomatik değiştirilmez; tekrar yüklemede aynı kayıtla eşleştirmek için sürümü öncekiyle aynı tutun.
-
-V1.2: PQ listesi, alan filtresi ve tüm kayıt çıktıları LEG/ORG/PEL/OPS/AIR/AIG/ANS/AGA sırasındadır. Alan veya diğer filtreler değişince seçili PQ filtre dışında kalırsa ilk uygun PQ seçilir; kaynak adı ve belge tarihi de yenilenir. Mevcut kayıtların tekrar yüklenmesi gerekmez.
-
-V1.3: CAP adımları varsayılan kapalıdır. Adım başlığına tıklayarak kaynak bilgilerini açın. Değerlendirme yapmak isterseniz ayrıca “Bu CAP adımını değerlendir” başlığına tıklayın. Açmak/kapatmak değerlendirme kararı vermez; önceden yazılmış notları değiştirmez.
-
-V1.4 FIREBASE
-Firebase bağlantısı yapılandırıldı. Analytics kullanılmıyor.
-1. database.rules.json içeriğini Firebase Realtime Database > Rules bölümünde yayımlayın.
-2. Yerel test için BASLAT.bat ile http://localhost:8765 açın; dosyaya çift tıklamak yerine yerel sunucuyu kullanın.
-3. Firebase / Giriş: Authentication bölümünde oluşturduğunuz e-posta ve şifreyle giriş yapın.
-4. Bulut boşsa aktarım önizlemesini onaylayın. Mevcut bulut varsa bulut kaydını açın. Yerel çalışma ayrı tutulur.
-5. Not değiştirince altta Firebase kaydedildi yazısını doğrulayın.
-6. Bağlantı hatasında JSON yedek alın. Bağlantı dönünce Buluta tekrar kaydet kullanın. Sürüm çakışmasında yedek alıp Firebase kaydını yeniden açın; değişiklikleri karşılaştırarak uygulayın.
-7. Çıkış / Yerel otomatik JSON yedeği indirir, ardından önceki yerel çalışmaya döner.
-Sayfa yeniden açılınca yerel çalışma görünür; Firebase / Giriş ile bulut kaydını açın.
-Firebase tarayıcı SDK'sı internet gerektirir. Bağlantı yokken buluta kaydedildi denmez. Yerel kurtarma kopyası IndexedDB cloud-recovery anahtarındadır; JSON yedeği ayrıca alın.
-Canlı Firebase oturumu, sunucu kuralları ve tarayıcı uçtan uca testi henüz yapılmadı.
-GitHub Pages için bu klasörün dosyalarını deponun köküne yerleştirin. Word ve JSON yedeklerinizi depoya eklemeyin.
-
-V1.5: Yanlış oturum çakışması düzeltildi. Sunucudan güncel veri ve ETag okunup koşullu yazılır. Değişiklikler otomatik kaydedilir. Güncellemeden önce mevcut ekrandan JSON yedeği alın. Güncelleme sonrası bulut kaydını açın; kaydedilememiş notlar için yedeği geri yükleyin (bu işlem mevcut bulut çalışmasının tamamını değiştirir). Sonra Firebase kaydedildi mesajını doğrulayın.
+DOĞRULAMA
+Girişten otomatik yükleme ve indirme olmaması benzetimli testlerle kontrol edildi.
+Bu ortamda canlı hesapla uçtan uca tarayıcı testi yapılamadı.
