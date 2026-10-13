@@ -56,3 +56,5 @@ Sayfa yeniden açılınca yerel çalışma görünür; Firebase / Giriş ile bul
 Firebase tarayıcı SDK'sı internet gerektirir. Bağlantı yokken buluta kaydedildi denmez. Yerel kurtarma kopyası IndexedDB cloud-recovery anahtarındadır; JSON yedeği ayrıca alın.
 Canlı Firebase oturumu, sunucu kuralları ve tarayıcı uçtan uca testi henüz yapılmadı.
 GitHub Pages için bu klasörün dosyalarını deponun köküne yerleştirin. Word ve JSON yedeklerinizi depoya eklemeyin.
+
+V1.5: Yanlış oturum çakışması düzeltildi. Sunucudan güncel veri ve ETag okunup koşullu yazılır. Değişiklikler otomatik kaydedilir. Güncellemeden önce mevcut ekrandan JSON yedeği alın. Güncelleme sonrası bulut kaydını açın; kaydedilememiş notlar için yedeği geri yükleyin (bu işlem mevcut bulut çalışmasının tamamını değiştirir). Sonra Firebase kaydedildi mesajını doğrulayın.
