@@ -37,3 +37,5 @@ Sonraki ziyareti seçip İzleme sonucu ekle kullanın. Sonuçlar zaman sırasıy
 Ana Excel/PDF düğmeleri seçili ziyaret değerlendirmelerini kullanır. Yeni Ziyaret/takip raporları düğmesi ziyaret, açık işler, ziyaretler arası izleme ve seçili PQ geçmişini üretir.
 Takip kapanışı ICAO resmî bulgu/CAP kapanışı değildir.
 Ziyaretler ve takip geçmişi mevcut Firebase kaydına/JSON yedeğine dahil edilir. Firebase kuralları değişmez. Güncellemede index.html, app.js, app.css dosyalarını değiştirin; visits.js dosyasını ekleyin.
+
+V1.9: Ziyaret oluştururken birden fazla alan onay kutuları ile seçilir. PQ listesi seçili ziyaretin alanlarıyla sınırlanır. Tüm alanları göster kapsam sınırını kaldırır; diğer arama/CE/karar filtreleri çalışmaya devam eder. Ziyaret değişince kapsam filtresi yeniden uygulanır. Ziyaret alanlarını düzenle mevcut ziyaretin alanlarını değiştirir, notları silmez. Eski kapsamı boş ziyaretlerde tüm PQ’lar gösterilir. Çıktı kapsamındaki Tüm PQ’lar seçeneği tüm kayıtları, Filtrelenen PQ’lar ekrandaki listeyi kullanır.
