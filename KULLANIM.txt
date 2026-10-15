@@ -20,3 +20,11 @@ Yayın tamamlanınca Ctrl+F5 ile yenileyin. Firebase kuralları değişmez.
 DOĞRULAMA
 Girişten otomatik yükleme ve indirme olmaması benzetimli testlerle kontrol edildi.
 Bu ortamda canlı hesapla uçtan uca tarayıcı testi yapılamadı.
+
+V1.7 TÜRKÇE METİNLER
+TR Excel yükle ile .xlsx dosyasını seçin. PQ Number eşleştirme anahtarıdır; Audit Area varsa alan da doğrulanır. PQ Sorusu ve Bulgu sütunları Türkçe olarak alınır.
+Önce Word kayıtlarını yükleyin veya Firebase oturumunu açın. Önizlemede eşleşmeleri kontrol edip aktarın. Uygulamada bulunmayan Excel satırları yeni PQ oluşturmaz; sonradan Word yüklediğinizde Excel'i tekrar yükleyebilirsiniz.
+ENG/TR seçimi soru ve bulguyu birlikte değiştirir. CAP adımlarının çevirisi bu kapsamda değildir.
+Çeviriler aynı PQ kaydında Firebase/JSON yedeğine dahil edilir. İngilizce kaynak ve notlar korunur. Word kaynağı değişirse önceki çeviri kaynak değişikliği uyarısıyla kullanılmaz.
+PDF seçilen dilde; Excel PQ Özeti hem İngilizce hem Türkçe sütunlarla alınır.
+Güncelleme: index.html, app.js, formats.js dosyalarını değiştirin; yeni translations.js dosyasını aynı dizine ekleyin.
