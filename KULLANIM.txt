@@ -46,3 +46,5 @@ Seçim kutuları ve PQ listesi iki ayrı durum etiketi taşır. CAP başlığın
 GitHub'da index.html, app.js, app.css dosyalarını değiştirin.
 
 V1.11: PQ/CAP ve ziyaret raporlarının PDF çıktılarında inceleme durumu ve güncelleme kararı aynı renklerle etiketlenir. Tarayıcı renkleri bastırıyorsa yazdırma ekranında Arka plan grafikleri seçeneğini açın. Metin etiketleri siyah-beyaz baskıda da korunur. index.html, app.js, visits.js dosyalarını güncelleyin.
+
+V1.12: Ana PDF / Yazdır düğmesinde CAP kapsamı seçilir: yalnızca değerlendirilenler (varsayılan), tüm adımlar veya CAP adımları hariç. Seçili ziyaretin değerlendirmeleri esas alınır. Not, gerekçe, takip, durum, karar veya önerilen değer girişi değerlendirme sayılır; sadece açıp okumak sayılmaz. PQ bilgileri korunur. Ziyaret/takip raporları mevcut kayıt ve izleme geçmişini raporlamaya devam eder. index.html ve app.js dosyalarını güncelleyin.
