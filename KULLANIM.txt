@@ -44,3 +44,5 @@ V1.10 DURUM RENKLERİ
 İncelenmedi/Henüz değerlendirilmedi: gri. İnceleniyor: mavi. İnceleme tamamlandı/Güncelleme gerekli değil: yeşil. Güncelleme gerekli: kırmızı. Birim görüşü bekleniyor: turuncu.
 Seçim kutuları ve PQ listesi iki ayrı durum etiketi taşır. CAP başlığında etiketler değerlendirme kaydı varsa görünür. Seçili PQ vurgusu korunur. Renkler seçili ziyaretin değerlendirmesine göre güncellenir. Verilerde değişiklik/migrasyon gerekmez.
 GitHub'da index.html, app.js, app.css dosyalarını değiştirin.
+
+V1.11: PQ/CAP ve ziyaret raporlarının PDF çıktılarında inceleme durumu ve güncelleme kararı aynı renklerle etiketlenir. Tarayıcı renkleri bastırıyorsa yazdırma ekranında Arka plan grafikleri seçeneğini açın. Metin etiketleri siyah-beyaz baskıda da korunur. index.html, app.js, visits.js dosyalarını güncelleyin.
