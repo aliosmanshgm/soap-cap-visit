@@ -5,3 +5,16 @@
 .visitbar{margin:18px 26px 0;padding:15px 20px;background:#e5f3f2;border-radius:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.visitbar label{margin:0;flex:1;min-width:250px}.visitbar p{width:100%;margin:0;color:#496079;font-size:12px}.tracking-event{border-left:3px solid #b6d8d5;padding:10px 15px;margin:10px 0;background:#f5f9fa}
 
 #vAreas,#editAreas{border:1px solid #d5dfe7;border-radius:7px;display:flex;flex-wrap:wrap;gap:15px;padding:15px}#vAreas label,#editAreas label{display:flex;align-items:center;gap:6px;margin:0}#vAreas input,#editAreas input{width:auto;margin:0}.visitbar .scope-toggle{display:flex;align-items:center;gap:8px;min-width:180px;flex:0}.scope-toggle input{width:auto;margin:0}
+
+/* Status colors: readable text always accompanies color. */
+.tone-neutral{--status-bg:#edf0f3;--status-fg:#4b5967;--status-border:#adb8c3}
+.tone-blue{--status-bg:#e6f0ff;--status-fg:#174b8d;--status-border:#7aa4dc}
+.tone-green{--status-bg:#e7f4eb;--status-fg:#22643a;--status-border:#82b792}
+.tone-red{--status-bg:#ffebeb;--status-fg:#a32626;--status-border:#df9393}
+.tone-amber{--status-bg:#fff3d9;--status-fg:#805000;--status-border:#cba257}
+.status-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;letter-spacing:normal}
+.status-tag{display:inline-block;background:var(--status-bg);color:var(--status-fg);border:1px solid var(--status-border);border-radius:6px;font-size:11px;font-weight:600;padding:4px 7px;line-height:1.45}
+select.status-select{background-color:var(--status-bg);color:var(--status-fg);border:1px solid var(--status-border);border-left-width:4px;font-weight:600}
+select.status-select:focus-visible{outline:3px solid #597caa;outline-offset:2px}
+select.status-select option{background:white;color:#203044}
+nav button.active .status-tag{box-shadow:none}
